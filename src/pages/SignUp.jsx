@@ -4,7 +4,9 @@ import { ReactComponent as ArrowRightIcon } from '../assets/svg/keyboardArrowRig
 import visibilityIcon from '../assets/svg/visibilityIcon.svg'
 import { getAuth, createUserWithEmailAndPassword, updateProfile } from 'firebase/auth'
 import { db } from '../firebase.config'
-import { setDoc, serverTimestamp } from 'firebase/firestore'
+import { doc, setDoc, serverTimestamp } from 'firebase/firestore'
+import { toast } from 'react-toastify'
+import OAuth from '../components/OAuth'
 
 function SignUp() {
     const [showPassword, setShowPassword] = useState(false)
@@ -26,7 +28,7 @@ function SignUp() {
     )}
 
     const onSubmit = async(e) => {
-        e.prevent.Default()
+        e.preventDefault()
 
         try {
             const auth = getAuth()
@@ -45,7 +47,7 @@ function SignUp() {
 
             navigate('/')
         } catch (error) {
-            console.log(error);
+            toast.error('Something went wrong registration, please try again.')
         }
     }
 
@@ -90,6 +92,7 @@ function SignUp() {
                         </button>
                     </div>
                 </form>
+                <OAuth />
                 <Link to='/sign-in' className='registerLink'>
                     Already have an account? Sign in here
                 </Link>
