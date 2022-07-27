@@ -7,8 +7,10 @@ import Offers from './pages/Offers'
 import SignIn from './pages/SignIn'
 import SignUp from './pages/SignUp'
 import Profile from './pages/Profile'
+import Contact from './pages/Contact'
 import CreateListing from './pages/CreateListing'
 import Category from './pages/Category'
+import Listing from './pages/Listing'
 import Navbar from './components/Navbar'
 import PrivateRoute from './components/PrivateRoute'
 
@@ -25,8 +27,10 @@ function App() {
           </Route>
           <Route path='/sign-in' element={<SignIn />}/>
           <Route path='/sign-up' element={<SignUp />}/>
+          <Route path='/contact/:landlordId' element={<Contact />} />
           <Route path='/create-listing' element={<CreateListing />} />
           <Route path='/forgot-password' element={<ForgotPassword />}/>
+          <Route path='/category/:categoryName/:listingId' elemen={<Listing />} /> 
         </Routes>
         <Navbar />
       </Router>
