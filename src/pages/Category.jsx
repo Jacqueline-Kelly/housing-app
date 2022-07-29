@@ -4,15 +4,47 @@ import { collection, getDocs, query, where, orderBy, limit,
 startAfter } from 'firebase/firestore' 
 import { db } from '../firebase.config'
 import { toast } from 'react-toastify'
-import reactComponent from '../assets/svg/homeIcon.svg'
+import Spinner from '../components/Spinner'
 import ListingItem from '../components/ListingItem'
 
 function Category() {
     const [listings, setListings] = useState(null)
     const [loading, setLoading] = useState(true)
+    const [lastFetchedListing, setLastFetchedListing] = useState(null)
 
     const params = useParams()
 
+    // pagination 
+    const onFetchMoreListings = async() => {
+        try {
+            const listingsRef = collection(db, 'listings')
+
+            const q = query(listingsRef, where('type', '==', params.categoryName),
+            orderBy('timestamp','desc'),
+            limit(10),
+            startAfter(lastFetchedListing),
+            )
+
+            const querySnap = await getDocs(q)
+
+            const lastVisible = querySnap.docs[querySnap.docs.length -1]
+            setLastFetchedListing(lastVisible)
+
+            let listings = []
+
+            querySnap.forEach((doc) => {
+                return listings.push({
+                    id: doc.id,
+                    data: doc.data()
+                })
+            })
+
+            setListings((prevState) => [...prevState, ...listings])
+            setLoading(false)
+        } catch (error) {
+            toast.error('Could not fetch listings') 
+        }
+    }
     useEffect(() => {
         const fetchListings = async() => {
             try {
@@ -24,6 +56,9 @@ function Category() {
                 )
 
                 const querySnap = await getDocs(q)
+
+                const lastVisible = querySnap.docs[querySnap.docs.length -1]
+                setLastFetchedListing(lastVisible)
 
                 let listings = []
 
@@ -40,6 +75,8 @@ function Category() {
                toast.error('Could not fetch listings') 
             }
         }
+
+
         fetchListings()
     }, [params.categoryName])
 
@@ -51,7 +88,7 @@ function Category() {
                     'Places for Rent' : 'Places for Sale'}
                 </p>
             </header>
-            {loading ? <homeIcon /> : listings && listings.length > 0 ? 
+            {loading ? <Spinner /> : listings && listings.length > 0 ? 
             <>
             <main>
                 <ul className='categoryListings'>
@@ -63,6 +100,15 @@ function Category() {
                     ))}
                 </ul>
             </main>
+
+            <br />
+            <br />
+            
+            {lastFetchedListing && (
+                <p className="loadMore" onClick={onFetchMoreListings}>
+                    Load More Listings
+                </p>
+            )}
             </> : 
             <p>Not listings for {params.categoryName}</p>}
         </div>
