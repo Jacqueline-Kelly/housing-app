@@ -8,6 +8,7 @@ from 'swiper'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import 'swiper/swiper-bundle.css'
 import Spinner from './Spinner'
+SwiperCore.use([Navigation, Pagination, Scrollbar, A11y])
 
 function Slider () {
     const [loading, setLoading] = useState(true)
@@ -18,7 +19,7 @@ function Slider () {
     useEffect(() => {
         const fetchListings = async() => {
             const listingsRef = collection(db, 'listings')
-            const q = query(listingsRef, orderBy('timestamp', 'desc'), limit(10))
+            const q = query(listingsRef, orderBy('timestamp', 'desc'), limit(3))
             const querySnap = await getDocs(q)
 
             let listings = []
@@ -39,7 +40,12 @@ function Slider () {
         return( <Spinner />)
     }
 
-    return listings && (
+    if (listings.length === 0) {
+        return <></>
+    }
+
+    return (
+        listings && (
         <>
             <p className="exploreHeading">
                 Recommended Listings
@@ -61,6 +67,6 @@ function Slider () {
                 )}
             </Swiper>
         </>
-    )
+    ))
 }
 export default Slider

@@ -26,10 +26,10 @@ function Offers() {
 
                 const querySnap = await getDocs(q)
 
-                const lastVisible = querySnap.docs[querySnap.docs.length 
-                    -1]
+                const lastVisible = querySnap.docs[querySnap.docs.length - 1]
                 setLastFetchedListing(lastVisible)
-                let listings = []
+                
+                const listings = []
 
                 querySnap.forEach((doc) => {
                     return listings.push({
@@ -46,15 +46,18 @@ function Offers() {
         }
         fetchListings()
     }, [])
+
        // pagination 
        const onFetchMoreListings = async() => {
         try {
             const listingsRef = collection(db, 'listings')
 
-            const q = query(listingsRef, where('offer', '==', params.categoryName),
-            orderBy('timestamp','desc'),
-            limit(10),
-            startAfter(lastFetchedListing),
+            const q = query(
+                listingsRef, 
+                where('offer', '==', true),
+                orderBy('timestamp','desc'),
+                startAfter(lastFetchedListing),
+                limit(10),
             )
 
             const querySnap = await getDocs(q)
@@ -62,7 +65,7 @@ function Offers() {
             const lastVisible = querySnap.docs[querySnap.docs.length -1]
             setLastFetchedListing(lastVisible)
 
-            let listings = []
+            const listings = []
 
             querySnap.forEach((doc) => {
                 return listings.push({

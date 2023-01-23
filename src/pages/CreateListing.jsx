@@ -16,7 +16,7 @@ import { addDoc, collection, serverTimestamp} from 'firebase/firestore'
 // import 'swiper/swiper-bundle.css'
 
 function CreateListing() {
-    const [geoLocationEnabled, setGeoLocationEnabled] = useState(true)
+    const [geoLocationEnabled, setGeoLocationEnabled] = useState(false)
     const [formData, setFormData] = useState({
         type: 'rent',
         name: '',
@@ -26,9 +26,9 @@ function CreateListing() {
         furnished: false,
         address: '',
         offer: false,
-        regularprice: 0,
+        regularPrice: 0,
         discountedPrice: 0,
-        images: [],
+        images: {},
         latitude: 0,
         longitude: 0,
     })
@@ -167,18 +167,17 @@ function CreateListing() {
         formDataCopy.location = address
         delete formDataCopy.images
         delete formDataCopy.address
-        // location && (formDataCopy.location = location)
         !formDataCopy.offer && delete formDataCopy.discountedPrice
 
         const docRef = await addDoc(collection(db, 'listings'), 
         formDataCopy)
-
         setLoading(false)
         toast.success('Listing was uploaded')
         navigate(`/category/${formDataCopy.type}/${docRef.id}`)
     }
+
     const onMutate = (e) => {
-        e.preventDefault()
+
         let boolean = null
         
         if (e.target.value === 'true') {
@@ -191,16 +190,17 @@ function CreateListing() {
             setFormData((prevState) => ({
                 ...prevState,
                 images: e.target.files,
-            }))
-        if (e.target.files) {
+            }))}
+
+        if (!e.target.files) {
             setFormData((prevState) => ({
                 ...prevState,
                 [e.target.id] : boolean ?? e.target.value
             }))
         }
-        }
-
     }
+
+    
 
     if(loading) {
         return(<Spinner />)

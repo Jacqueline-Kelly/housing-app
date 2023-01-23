@@ -12,7 +12,7 @@ function Explore() {
                 </p>
             </header>
             <main>
-                <Slider />
+                {/* <Slider /> */}
                 <p className="exploreCategoryHeading">
                     Categories
                 </p>

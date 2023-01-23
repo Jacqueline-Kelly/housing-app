@@ -14,7 +14,7 @@ SwiperCore.use([Navigation, Pagination, Scrollbar, A11y])
 
 function Listing () {
     const [listing, setListing] = useState(null)
-    const [loading, setLoading] = useState(null)
+    const [loading, setLoading] = useState(true)
     const [shareLinkCopied, setShareLinkCopied] = useState(false)
 
     const navigate = useNavigate()
@@ -24,14 +24,15 @@ function Listing () {
     useEffect(() => {
         const fetchListing = async() => {
                 // listings is collection name
-            const docRef = doc(db, 'listings')
+            const docRef = doc(db, 'listings', params.listingId)
             const docSnap = await getDoc(docRef)
 
             if (docSnap.exists()) {
                 setListing(docSnap.data())
-                console.log(docSnap.data())
+                setLoading(false)
             }
         }
+        
         fetchListing()
     }, [navigate, params.listingId])
 

@@ -81,9 +81,8 @@ function Profile() {
     const onDelete = async(listingId) => {
         if(window.confirm('Are you sure you want to delete?')) {
             await deleteDoc(doc(db, 'listings', listingId))
-            const updatedListing = listings((listing) => 
-            listing.id !== listingId
-            ) 
+            const updatedListings = listings((listing) => 
+            listing.id !== listingId) 
             setListings(updatedListings)
             toast.success('Listing deleted successfully')
         }
@@ -97,7 +96,7 @@ function Profile() {
             <p className='pageHeader'>
                 My Profile
             </p>
-            <button type='button' className='logOut' onclick={onLogout}>
+            <button type='button' className='logOut' onClick={onLogout}>
                 Logout
             </button>
         </header>
